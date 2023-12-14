@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:todo_app/model/CategoryEntry.dart';
 import 'package:todo_app/model/state/StateManager.dart';
 
 class CategoryManager extends StateManager<String> {
   List<CategoryEntry> possibleCategories = [];
 
-  void addCategory(String name, Icon icon) {
-    possibleCategories.add(CategoryEntry(name, icon));
+  void addCategory(String name) {
+    possibleCategories.add(CategoryEntry(name));
     notifyListeners();
   }
 

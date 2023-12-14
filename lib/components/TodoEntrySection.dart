@@ -35,37 +35,35 @@ class _TodoEntrySectionState extends State<TodoEntrySection> {
 
     return DefaultTabController(
         length: 2,
-        child: Card(
-            elevation: 10,
-            surfaceTintColor: Colors.white,
-            color: Colors.white,
-            child: Column(children: [
-              const TabBar(
-                  tabs: [Tab(text: "Today"), Tab(text: "Upcoming")],
-                  labelStyle: TextStyle(fontSize: 20)),
-              Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                      height: 305,
+        child: Expanded(
+            child: Card(
+                elevation: 10,
+                surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+                child: Column(children: [
+                  const TabBar(
+                      tabs: [Tab(text: "Today"), Tab(text: "Upcoming")],
+                      labelStyle: TextStyle(fontSize: 20)),
+                  Expanded(
                       child: TabBarView(children: [
-                        ListView.builder(
-                            itemCount: todaysEntries.length,
-                            itemBuilder: (context, index) => Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: TodoItem(
-                                    todo: todaysEntries[index],
-                                    onTodoChanged: _handleTodoChange,
-                                    onDeleteItem: _handleDeleteItem))),
-                        ListView.builder(
-                            itemCount: upComingEntries.length,
-                            itemBuilder: (context, index) => Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: TodoItem(
-                                      todo: upComingEntries[index],
-                                      onTodoChanged: _handleTodoChange,
-                                      onDeleteItem: _handleDeleteItem),
-                                ))
-                      ]))),
-            ])));
+                    ListView.builder(
+                        itemCount: todaysEntries.length,
+                        itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: TodoItem(
+                                todo: todaysEntries[index],
+                                onTodoChanged: _handleTodoChange,
+                                onDeleteItem: _handleDeleteItem))),
+                    ListView.builder(
+                      
+                        itemCount: upComingEntries.length,
+                        itemBuilder: (context, index) => Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TodoItem(
+                                  todo: upComingEntries[index],
+                                  onTodoChanged: _handleTodoChange,
+                                  onDeleteItem: _handleDeleteItem),
+                            ))
+                  ])),
+                ]))));
   }
 }

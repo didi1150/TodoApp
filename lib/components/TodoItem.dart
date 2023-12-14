@@ -17,10 +17,10 @@ class TodoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
         shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Colors.black12, width: 1),
+            side: BorderSide(color: Theme.of(context).dividerColor, width: 1),
             borderRadius: BorderRadius.circular(10)),
         selectedColor: Colors.green,
-        tileColor: Colors.white,
+        tileColor: Theme.of(context).listTileTheme.tileColor,
         leading: IconButton(
           onPressed: () {
             onTodoChanged(todo);

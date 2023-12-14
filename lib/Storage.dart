@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -13,25 +14,37 @@ class SQLiteStorage {
     return _instance;
   }
 
-  SQLiteStorage._internal() {
-    WidgetsFlutterBinding.ensureInitialized();
+  SQLiteStorage._internal();
 
-    _initDatabase();
+  Future<Database> initDatabase() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    print(join(await getDatabasesPath(), 'todo_list.db'));
+    return _database = openDatabase(
+        join(await getDatabasesPath(), 'todo_list.db'),
+        version: 1,
+        singleInstance: true);
   }
 
-  void _initDatabase() async {
-    _database = openDatabase(join(await getDatabasesPath(), 'todo_list.db'));
+  Future<List<CategoryEntry>> getCategories() async {
+    final db = await _database;
+    List<Map<String, dynamic>> query =
+        await db.query('sqlite_master', columns: ['type', 'name']);
+    debugPrint("${query.length}");
+    return query
+        .map((row) => CategoryEntry(row['name']))
+        .toList(growable: true);
   }
 
   Future<void> createCategory(CategoryEntry category) async {
     final db = await _database;
+    print("Adding ${category.name}");
     return db.execute(
-        'CREATE TABLE IF NOT EXISTS $category(id TEXT PRIMARY KEY, name TEXT, deadline TEXT, isDone BOOLEAN)');
+        'CREATE TABLE IF NOT EXISTS ${category.name}(id TEXT PRIMARY KEY, name TEXT, deadline TEXT, isDone BOOLEAN)');
   }
 
   Future<void> deleteCategory(CategoryEntry category) async {
     final db = await _database;
-    return db.execute("DROP TABLE IF EXISTS $category");
+    return db.execute("DROP TABLE IF EXISTS ${category.name}");
   }
 
   Future<void> addTodo(TodoEntry todo, String categoryName) async {
@@ -57,7 +70,29 @@ class SQLiteStorage {
             id: todoMaps[index]['id'] as String));
   }
 
-  Future<int> getTodoAmount(String categoryName) async {
+  Future<Map<String, int>> getAllTodoAmounts() async {
+    List<CategoryEntry> categories = await getCategories();
+    Map<String, int> amountMap = {};
+    for (CategoryEntry c in categories) {
+      int amount = await _getTodoAmount(c.name);
+      print("db2: ${categories.length}");
+      amountMap.putIfAbsent(c.name, () => amount);
+    }
+    return amountMap;
+  }
+
+  Future<Map<String, List<TodoEntry>>> getAllTodos() async {
+    List<CategoryEntry> categories = await getCategories();
+    Map<String, List<TodoEntry>> todosMap = {};
+    for (CategoryEntry c in categories) {
+      List<TodoEntry> todo = await getTodos(c.name);
+      print("db3");
+      todosMap.putIfAbsent(c.name, () => todo);
+    }
+    return todosMap;
+  }
+
+  Future<int> _getTodoAmount(String categoryName) async {
     final db = await _database;
 
     final List<Map<String, dynamic>> categoryMap = await db.query(categoryName);

@@ -1,5 +1,3 @@
-import 'dart:html';
-
 class TodoEntry {
   final String name;
   final DateTime deadline;
