@@ -42,10 +42,10 @@ dependencies:
   sqflite: ^2.3.0
   flutter_launcher_icons: "^0.13.1"
 
-# flutter_launcher_icons:
-#   android: true
-#   image_path: "assets/icon/icon.png"
-#   min_sdk_android: 21
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/Todo_Icon.png"
+  min_sdk_android: 21
 
 dev_dependencies:
   flutter_test:
