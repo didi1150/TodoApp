@@ -31,13 +31,13 @@ class TodoItem extends StatelessWidget {
           color: Colors.green,
         ),
         titleAlignment: ListTileTitleAlignment.center,
-        title: Text(
-          todo.name,
-          style: TextStyle(
-              decoration: todo.isDone
-                  ? TextDecoration.lineThrough
-                  : TextDecoration.none),
-        ),
+        title: Text(todo.name,
+            style: TextStyle(
+                decoration: todo.isDone
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+                decorationThickness: 3,
+                decorationColor: Colors.red)),
         subtitle:
             Text("Deadline: ${DateFormat("E dd-MM-yy").format(todo.deadline)}"),
         trailing: IconButton(

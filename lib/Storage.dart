@@ -18,7 +18,6 @@ class SQLiteStorage {
 
   Future<Database> initDatabase() async {
     WidgetsFlutterBinding.ensureInitialized();
-    print(join(await getDatabasesPath(), 'todo_list.db'));
     return _database = openDatabase(
         join(await getDatabasesPath(), 'todo_list.db'),
         version: 1,
@@ -27,19 +26,18 @@ class SQLiteStorage {
 
   Future<List<CategoryEntry>> getCategories() async {
     final db = await _database;
-    List<Map<String, dynamic>> query =
-        await db.query('sqlite_master', columns: ['type', 'name']);
-    debugPrint("${query.length}");
-    return query
-        .map((row) => CategoryEntry(row['name']))
-        .toList(growable: true);
+    List<Map<String, dynamic>> query = await db
+        .query('sqlite_master', where: 'type = ?', whereArgs: ['table']);
+    var list =
+        query.map((row) => CategoryEntry(row['name'])).toList(growable: true);
+    list.removeWhere((element) => element.name == 'android_metadata');
+    return list;
   }
 
   Future<void> createCategory(CategoryEntry category) async {
     final db = await _database;
-    print("Adding ${category.name}");
     return db.execute(
-        'CREATE TABLE IF NOT EXISTS ${category.name}(id TEXT PRIMARY KEY, name TEXT, deadline TEXT, isDone BOOLEAN)');
+        'CREATE TABLE IF NOT EXISTS ${category.name}(id TEXT PRIMARY KEY, name TEXT, deadline TEXT, isDone TEXT)');
   }
 
   Future<void> deleteCategory(CategoryEntry category) async {
@@ -60,22 +58,26 @@ class SQLiteStorage {
 
   Future<List<TodoEntry>> getTodos(String categoryName) async {
     final db = await _database;
-
     final List<Map<String, dynamic>> todoMaps = await db.query(categoryName);
+    if (todoMaps.isEmpty) return [];
     return List.generate(
-        todoMaps.length,
-        (index) => TodoEntry(
+      todoMaps.length,
+      (index) {
+        TodoEntry t = TodoEntry(
             name: todoMaps[index]['name'] as String,
             deadline: DateTime.parse(todoMaps[index]['deadline']),
-            id: todoMaps[index]['id'] as String));
+            id: todoMaps[index]['id'] as String);
+        t.isDone = bool.parse(todoMaps[index]['isDone']);
+        return t;
+      },
+    );
   }
 
   Future<Map<String, int>> getAllTodoAmounts() async {
     List<CategoryEntry> categories = await getCategories();
     Map<String, int> amountMap = {};
     for (CategoryEntry c in categories) {
-      int amount = await _getTodoAmount(c.name);
-      print("db2: ${categories.length}");
+      var amount = await _getTodoAmount(c.name);
       amountMap.putIfAbsent(c.name, () => amount);
     }
     return amountMap;
@@ -86,7 +88,6 @@ class SQLiteStorage {
     Map<String, List<TodoEntry>> todosMap = {};
     for (CategoryEntry c in categories) {
       List<TodoEntry> todo = await getTodos(c.name);
-      print("db3");
       todosMap.putIfAbsent(c.name, () => todo);
     }
     return todosMap;
@@ -95,7 +96,13 @@ class SQLiteStorage {
   Future<int> _getTodoAmount(String categoryName) async {
     final db = await _database;
 
-    final List<Map<String, dynamic>> categoryMap = await db.query(categoryName);
+    List<Map<String, dynamic>> categoryMap = await db.query(categoryName);
     return categoryMap.length;
+  }
+
+  Future<void> updateTodoStatus(TodoEntry todo, String categoryName) async {
+    final db = await _database;
+    db.update(categoryName, todo.toMap(),
+        where: 'id = ?', whereArgs: [todo.id]);
   }
 }

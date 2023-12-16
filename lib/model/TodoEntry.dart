@@ -10,7 +10,7 @@ class TodoEntry {
       'id': this.id,
       'name': this.name,
       'deadline': deadline.toString(),
-      'isDone': isDone,
+      'isDone': isDone.toString(),
     };
   }
 }

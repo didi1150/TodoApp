@@ -1,17 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/Storage.dart';
 import 'package:todo_app/components/TodoItem.dart';
+import 'package:todo_app/model/CategoryEntry.dart';
 import 'package:todo_app/model/TodoEntry.dart';
 
 class TodoEntrySection extends StatefulWidget {
-  TodoEntrySection({super.key, required this.searchResults});
+  TodoEntrySection(
+      {super.key,
+      required this.searchResults,
+      required this.selectedCategory,
+      required this.updateFunction});
 
   List<TodoEntry> searchResults = [];
-
+  CategoryEntry? selectedCategory;
+  Function updateFunction;
   @override
   State<TodoEntrySection> createState() => _TodoEntrySectionState();
 }
 
 class _TodoEntrySectionState extends State<TodoEntrySection> {
+  void _handleTodoChange(TodoEntry todo) async {
+    if (widget.selectedCategory == null) return;
+    todo.isDone = !todo.isDone;
+    await SQLiteStorage().updateTodoStatus(todo, widget.selectedCategory!.name);
+    widget.updateFunction();
+  }
+
+  Future<void> _handleDeleteItem(TodoEntry todo) async {
+    if (widget.selectedCategory == null) return;
+    await SQLiteStorage().deleteTodo(todo.id, widget.selectedCategory!.name);
+    widget.updateFunction();
+  }
+
   Widget build(BuildContext context) {
     List<TodoEntry> todaysEntries = widget.searchResults
         .where(
@@ -21,22 +41,11 @@ class _TodoEntrySectionState extends State<TodoEntrySection> {
         .where((element) => !todaysEntries.contains(element))
         .toList();
 
-    void _handleTodoChange(TodoEntry todo) {
-      setState(() {
-        todo.isDone = !todo.isDone;
-      });
-    }
-
-    void _handleDeleteItem(TodoEntry todo) {
-      setState(() {
-        widget.searchResults.removeWhere((element) => element.id == todo.id);
-      });
-    }
-
     return DefaultTabController(
         length: 2,
         child: Expanded(
             child: Card(
+                clipBehavior: Clip.hardEdge,
                 elevation: 10,
                 surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
                 child: Column(children: [
@@ -54,7 +63,6 @@ class _TodoEntrySectionState extends State<TodoEntrySection> {
                                 onTodoChanged: _handleTodoChange,
                                 onDeleteItem: _handleDeleteItem))),
                     ListView.builder(
-                      
                         itemCount: upComingEntries.length,
                         itemBuilder: (context, index) => Padding(
                               padding: const EdgeInsets.all(10),

@@ -1,6 +1,6 @@
-import 'package:path/path.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
+// import 'package:sqflite/sqflite.dart';
+// import 'package:path/path.dart';
 import 'package:todo_app/Storage.dart';
 import 'package:todo_app/components/CategorySection.dart';
 import 'package:todo_app/components/CreateFABButton.dart';
@@ -14,6 +14,7 @@ import 'package:uuid/uuid.dart';
 
 void main() async {
   await SQLiteStorage().initDatabase();
+  // await SQLiteStorage().deleteCategory(CategoryEntry("android_metadata"));
   // WidgetsFlutterBinding.ensureInitialized();
   // deleteDatabase(join(await getDatabasesPath(), 'todo_list.db'));
   runApp(MaterialApp(
@@ -36,22 +37,9 @@ class TodoApp extends StatefulWidget {
 class _TodoAppState extends State<TodoApp> {
   final CategoryManager categoryManager = CategoryManager();
 
-  List<TodoEntry> todoList = [
-    TodoEntry(name: "Mike", deadline: DateTime.now(), id: const Uuid().v4()),
-    TodoEntry(name: "Oxlong", deadline: DateTime.now(), id: const Uuid().v4()),
-    TodoEntry(
-        name: "DK",
-        deadline: DateTime.now().add(Duration(days: 2)),
-        id: const Uuid().v4()),
-    TodoEntry(name: "1", deadline: DateTime.now(), id: const Uuid().v4()),
-    TodoEntry(name: "2", deadline: DateTime.now(), id: const Uuid().v4()),
-    TodoEntry(name: "3", deadline: DateTime.now(), id: const Uuid().v4()),
-    TodoEntry(name: "4", deadline: DateTime.now(), id: const Uuid().v4()),
-    TodoEntry(name: "5", deadline: DateTime.now(), id: const Uuid().v4()),
-    TodoEntry(name: "6", deadline: DateTime.now(), id: const Uuid().v4())
-  ];
+  List<TodoEntry> todoList = [];
 
-  late final List<TodoEntry> _searchResults = List.from(todoList);
+  late List<TodoEntry> _searchResults = [];
 
   updateSearchResult(String searchText) {
     _searchResults.clear();
@@ -77,6 +65,7 @@ class _TodoAppState extends State<TodoApp> {
       context: context,
       builder: (context) {
         return CreationDialog(
+          categoryManager: categoryManager,
           dialogType: index,
           closeDialog: () {
             Navigator.of(context).pop();
@@ -85,6 +74,11 @@ class _TodoAppState extends State<TodoApp> {
         );
       },
     );
+  }
+
+  void _selectCategory(CategoryEntry categoryEntry) {
+    categoryManager.selectedEntry = categoryEntry;
+    setState(() {});
   }
 
   @override
@@ -99,6 +93,12 @@ class _TodoAppState extends State<TodoApp> {
                 color: Theme.of(context).appBarTheme.foregroundColor,
                 fontSize: 25),
           ),
+          bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(4.0),
+              child: Container(
+                color: Colors.blue,
+                height: 2.0,
+              )),
           elevation: 10,
           centerTitle: true,
         ),
@@ -149,7 +149,6 @@ class _TodoAppState extends State<TodoApp> {
                 );
               }
 
-              print("Data has arrived");
               List<CategoryEntry> categories =
                   snapshot.data![0] as List<CategoryEntry>;
               Map<String, int> amountsMap =
@@ -158,6 +157,16 @@ class _TodoAppState extends State<TodoApp> {
                   snapshot.data![2] as Map<String, List<TodoEntry>>;
 
               categoryManager.possibleCategories = categories;
+              if (categories.isNotEmpty) {
+                categoryManager.selectedEntry ??= categories[0];
+              }
+
+              var currentTodos = [];
+              if (categoryManager.selectedEntry != null)
+                currentTodos =
+                    todosMap[categoryManager.selectedEntry!.name] ?? [];
+              todoList = [...currentTodos];
+              _searchResults = List.from(todoList);
 
               return SingleChildScrollView(
                   child: SizedBox(
@@ -173,7 +182,14 @@ class _TodoAppState extends State<TodoApp> {
                         child: Text("Categories",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 25))),
-                    CategorySection(categoryManager: categoryManager),
+                    CategorySection(
+                      categoryManager: categoryManager,
+                      amountsMap: amountsMap,
+                      updateFunction: () {
+                        setState(() {});
+                      },
+                      select: _selectCategory,
+                    ),
                     const SizedBox(
                       height: 15,
                     ),
@@ -182,7 +198,11 @@ class _TodoAppState extends State<TodoApp> {
                     ),
                     const SizedBox(height: 15),
                     TodoEntrySection(
+                      selectedCategory: categoryManager.selectedEntry,
                       searchResults: [..._searchResults],
+                      updateFunction: () {
+                        setState(() {});
+                      },
                     ),
                   ],
                 ),

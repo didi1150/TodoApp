@@ -3,6 +3,7 @@ import 'package:todo_app/model/state/StateManager.dart';
 
 class CategoryManager extends StateManager<String> {
   List<CategoryEntry> possibleCategories = [];
+  CategoryEntry? selectedEntry = null;
 
   void addCategory(String name) {
     possibleCategories.add(CategoryEntry(name));
