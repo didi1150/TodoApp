@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/Storage.dart';
-import 'package:todo_app/components/TodoItem.dart';
-import 'package:todo_app/model/CategoryEntry.dart';
-import 'package:todo_app/model/TodoEntry.dart';
+import 'package:Todos/Storage.dart';
+import 'package:Todos/components/TodoItem.dart';
+import 'package:Todos/model/CategoryEntry.dart';
+import 'package:Todos/model/TodoEntry.dart';
 
 class TodoEntrySection extends StatefulWidget {
   TodoEntrySection(

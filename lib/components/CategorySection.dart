@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/Storage.dart';
-import 'package:todo_app/model/state/CategoryManager.dart';
+import 'package:Todos/Storage.dart';
+import 'package:Todos/model/state/CategoryManager.dart';
 
 class CategorySection extends StatefulWidget {
   CategoryManager categoryManager;
@@ -35,7 +35,7 @@ class _CategorySectionState extends State<CategorySection> {
                                 category.name
                             ? Colors.blue
                             : Colors.grey,
-                            width: 2,
+                        width: 2,
                       )),
                   margin: const EdgeInsets.all(10),
                   color: widget.categoryManager.selectedEntry!.name ==

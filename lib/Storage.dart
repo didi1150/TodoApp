@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:todo_app/model/CategoryEntry.dart';
-import 'package:todo_app/model/TodoEntry.dart';
+import 'package:Todos/model/CategoryEntry.dart';
+import 'package:Todos/model/TodoEntry.dart';
 
 class SQLiteStorage {
   static final SQLiteStorage _instance = SQLiteStorage._internal();

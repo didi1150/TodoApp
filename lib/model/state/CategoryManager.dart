@@ -1,5 +1,5 @@
-import 'package:todo_app/model/CategoryEntry.dart';
-import 'package:todo_app/model/state/StateManager.dart';
+import 'package:Todos/model/CategoryEntry.dart';
+import 'package:Todos/model/state/StateManager.dart';
 
 class CategoryManager extends StateManager<String> {
   List<CategoryEntry> possibleCategories = [];

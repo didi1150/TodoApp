@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 // import 'package:sqflite/sqflite.dart';
 // import 'package:path/path.dart';
-import 'package:todo_app/Storage.dart';
-import 'package:todo_app/components/CategorySection.dart';
-import 'package:todo_app/components/CreateFABButton.dart';
-import 'package:todo_app/components/CreationDialog.dart';
-import 'package:todo_app/components/EntrySearchBar.dart';
-import 'package:todo_app/components/TodoEntrySection.dart';
-import 'package:todo_app/model/CategoryEntry.dart';
-import 'package:todo_app/model/TodoEntry.dart';
-import 'package:todo_app/model/state/CategoryManager.dart';
+import 'package:Todos/Storage.dart';
+import 'package:Todos/components/CategorySection.dart';
+import 'package:Todos/components/CreateFABButton.dart';
+import 'package:Todos/components/CreationDialog.dart';
+import 'package:Todos/components/EntrySearchBar.dart';
+import 'package:Todos/components/TodoEntrySection.dart';
+import 'package:Todos/model/CategoryEntry.dart';
+import 'package:Todos/model/TodoEntry.dart';
+import 'package:Todos/model/state/CategoryManager.dart';
 import 'package:uuid/uuid.dart';
 
 void main() async {

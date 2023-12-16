@@ -1,9 +1,8 @@
-import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_app/Storage.dart';
-import 'package:todo_app/model/CategoryEntry.dart';
-import 'package:todo_app/model/TodoEntry.dart';
-import 'package:todo_app/model/state/CategoryManager.dart';
+import 'package:Todos/Storage.dart';
+import 'package:Todos/model/CategoryEntry.dart';
+import 'package:Todos/model/TodoEntry.dart';
+import 'package:Todos/model/state/CategoryManager.dart';
 import 'package:uuid/uuid.dart';
 
 class CreationDialog extends StatefulWidget {
