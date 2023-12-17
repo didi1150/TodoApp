@@ -1,3 +1,4 @@
+import 'package:floating_draggable_widget/floating_draggable_widget.dart';
 import 'package:flutter/material.dart';
 // import 'package:sqflite/sqflite.dart';
 // import 'package:path/path.dart';
@@ -83,7 +84,8 @@ class _TodoAppState extends State<TodoApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FloatingDraggableWidget(
+      mainScreenWidget: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           title: Text(
@@ -208,15 +210,19 @@ class _TodoAppState extends State<TodoApp> {
                 ),
               ));
             }),
-        floatingActionButton: CreateFABButton(distance: 112, children: [
-          ActionButton(
-            icon: const Icon(Icons.create_new_folder),
-            onPressed: () => _showAction(context, 0),
-          ),
-          ActionButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _showAction(context, 1),
-          )
-        ]));
+      ),
+      floatingWidget: CreateFABButton(distance: 112, children: [
+        ActionButton(
+          icon: const Icon(Icons.create_new_folder),
+          onPressed: () => _showAction(context, 0),
+        ),
+        ActionButton(
+          icon: const Icon(Icons.add),
+          onPressed: () => _showAction(context, 1),
+        )
+      ]),
+      floatingWidgetHeight: 60,
+      floatingWidgetWidth: 60,
+    );
   }
 }

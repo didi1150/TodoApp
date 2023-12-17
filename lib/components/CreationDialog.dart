@@ -46,7 +46,14 @@ class _CreationDialogState extends State<CreationDialog> {
   }
 
   Future<void> _finish(BuildContext context) async {
+    errorMessage = null;
     if (type == 0) {
+      if (_inputController.text.contains(' ')) {
+        errorMessage = "Please remove the white spaces";
+        setState(() {});
+        return;
+      }
+
       await SQLiteStorage()
           .createCategory(CategoryEntry(_inputController.text));
 
@@ -54,7 +61,6 @@ class _CreationDialogState extends State<CreationDialog> {
     }
 
     if (type == 1) {
-      errorMessage = null;
       if (selectedCategory == null) {
         errorMessage = "Please select a category";
       } else if (_inputController.text.isEmpty) {
@@ -101,6 +107,15 @@ class _CreationDialogState extends State<CreationDialog> {
                       hintText: "Enter Category name...",
                       contentPadding: EdgeInsets.only(left: 10, right: 10))),
             ),
+            errorMessage != null
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 5, bottom: 5),
+                    child: Text(
+                      errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  )
+                : const SizedBox(),
             Padding(
               padding: const EdgeInsets.all(10),
               child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -159,6 +174,7 @@ class _CreationDialogState extends State<CreationDialog> {
             height: 15,
           ),
           DropdownMenu(
+            expandedInsets: const EdgeInsets.all(10),
             enableSearch: true,
             dropdownMenuEntries: widget.categoryManager.possibleCategories
                 .map((c) => DropdownMenuEntry(value: c, label: c.name))
@@ -167,7 +183,6 @@ class _CreationDialogState extends State<CreationDialog> {
             leadingIcon: const Icon(Icons.search),
             requestFocusOnTap: true,
             label: const Text('Category'),
-            width: 300,
             onSelected: (value) {
               selectedCategory = value!.name;
             },
@@ -180,13 +195,22 @@ class _CreationDialogState extends State<CreationDialog> {
                     hintText: "Enter Todo description...",
                     contentPadding: EdgeInsets.only(left: 10, right: 10))),
           ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Until:_${pickedDate!.toLocal()}"
-                  .split(' ')[0]
-                  .replaceFirst('_', ' ')),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Deadline:_${pickedDate!.toLocal()}"
+                    .split(' ')[0]
+                    .replaceFirst('_', ' '),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
               ElevatedButton(
                 onPressed: () {
                   _selectDate(context);
@@ -206,13 +230,15 @@ class _CreationDialogState extends State<CreationDialog> {
           ),
           errorMessage != null
               ? Padding(
-                  padding: const EdgeInsets.only(top: 5, bottom: 5),
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
                   child: Text(
                     errorMessage!,
                     style: const TextStyle(color: Colors.red),
                   ),
                 )
-              : const SizedBox(),
+              : const SizedBox(
+                  height: 20,
+                ),
           Padding(
             padding: const EdgeInsets.all(10),
             child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [

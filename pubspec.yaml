@@ -41,10 +41,11 @@ dependencies:
   path_provider: ^2.1.1
   sqflite: ^2.3.0
   flutter_launcher_icons: "^0.13.1"
+  floating_draggable_widget: ^2.1.4
 
 flutter_launcher_icons:
   android: true
-  image_path: "assets/Todo_Icon.png"
+  image_path: "assets/App_Logo.png"
   min_sdk_android: 21
 
 dev_dependencies:

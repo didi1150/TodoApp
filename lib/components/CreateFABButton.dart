@@ -1,3 +1,4 @@
+import 'package:floating_draggable_widget/floating_draggable_widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -128,10 +129,14 @@ class _CreateFABButtonState extends State<CreateFABButton>
           opacity: _open ? 0.0 : 1.0,
           curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
           duration: const Duration(milliseconds: 250),
-          child: FloatingActionButton(
-            onPressed: toggle,
-            child: const Icon(Icons.add),
-          ),
+          child: Container(
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
+              width: 56,
+              height: 56,
+              child: FloatingActionButton(
+                onPressed: toggle,
+                child: const Icon(Icons.add),
+              )),
         ),
       ),
     );

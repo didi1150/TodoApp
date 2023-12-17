@@ -38,11 +38,21 @@ class _TodoEntrySectionState extends State<TodoEntrySection> {
             (element) => DateUtils.isSameDay(element.deadline, DateTime.now()))
         .toList();
     List<TodoEntry> upComingEntries = widget.searchResults
-        .where((element) => !todaysEntries.contains(element))
+        .where((element) =>
+            element.deadline.isAfter(DateTime.now()) &&
+            (element.deadline.day != DateTime.now().day ||
+                DateTime.now().difference(element.deadline).inHours > 24))
+        .toList();
+
+    List<TodoEntry> expiredEntries = widget.searchResults
+        .where((element) =>
+            element.deadline.isBefore(DateTime.now()) &&
+            (element.deadline.day != DateTime.now().day ||
+                DateTime.now().difference(element.deadline).inHours > 24))
         .toList();
 
     return DefaultTabController(
-        length: 2,
+        length: 3,
         child: Expanded(
             child: Card(
                 clipBehavior: Clip.hardEdge,
@@ -50,7 +60,13 @@ class _TodoEntrySectionState extends State<TodoEntrySection> {
                 surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
                 child: Column(children: [
                   const TabBar(
-                      tabs: [Tab(text: "Today"), Tab(text: "Upcoming")],
+                      tabAlignment: TabAlignment.center,
+                      isScrollable: true,
+                      tabs: [
+                        Tab(text: "Today"),
+                        Tab(text: "Upcoming"),
+                        Tab(text: "Expired")
+                      ],
                       labelStyle: TextStyle(fontSize: 20)),
                   Expanded(
                       child: TabBarView(children: [
@@ -70,7 +86,16 @@ class _TodoEntrySectionState extends State<TodoEntrySection> {
                                   todo: upComingEntries[index],
                                   onTodoChanged: _handleTodoChange,
                                   onDeleteItem: _handleDeleteItem),
-                            ))
+                            )),
+                    ListView.builder(
+                        itemCount: expiredEntries.length,
+                        itemBuilder: (context, index) => Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TodoItem(
+                                  todo: expiredEntries[index],
+                                  onTodoChanged: _handleTodoChange,
+                                  onDeleteItem: _handleDeleteItem),
+                            )),
                   ])),
                 ]))));
   }
