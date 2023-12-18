@@ -37,7 +37,7 @@ class _TodoEntrySectionState extends State<TodoEntrySection> {
         .where(
             (element) => DateUtils.isSameDay(element.deadline, DateTime.now()))
         .toList();
-    todaysEntries.sort((a, b) => b.deadline.compareTo(a.deadline));
+    todaysEntries.sort((a, b) => a.deadline.compareTo(b.deadline));
     List<TodoEntry> upComingEntries = widget.searchResults
         .where((element) =>
             element.deadline.isAfter(DateTime.now()) &&
@@ -45,14 +45,14 @@ class _TodoEntrySectionState extends State<TodoEntrySection> {
                 DateTime.now().difference(element.deadline).inHours > 24))
         .toList();
 
-    upComingEntries.sort((a, b) => b.deadline.compareTo(a.deadline));
+    upComingEntries.sort((a, b) => a.deadline.compareTo(b.deadline));
     List<TodoEntry> expiredEntries = widget.searchResults
         .where((element) =>
             element.deadline.isBefore(DateTime.now()) &&
             (element.deadline.day != DateTime.now().day ||
                 DateTime.now().difference(element.deadline).inHours > 24))
         .toList();
-    expiredEntries.sort((a, b) => b.deadline.compareTo(a.deadline));
+    expiredEntries.sort((a, b) => a.deadline.compareTo(b.deadline));
 
     return DefaultTabController(
         length: 3,
