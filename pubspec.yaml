@@ -42,6 +42,7 @@ dependencies:
   sqflite: ^2.3.0
   flutter_launcher_icons: "^0.13.1"
   floating_draggable_widget: ^2.1.4
+  draggable_expandable_fab: ^1.0.0
 
 flutter_launcher_icons:
   android: true
