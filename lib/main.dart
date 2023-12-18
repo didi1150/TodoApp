@@ -216,10 +216,11 @@ class _TodoAppState extends State<TodoApp> {
           icon: const Icon(Icons.create_new_folder),
           onPressed: () => _showAction(context, 0),
         ),
-        ActionButton(
+        GestureDetector(
+            child: ActionButton(
           icon: const Icon(Icons.add),
           onPressed: () => _showAction(context, 1),
-        )
+        ))
       ]),
       floatingWidgetHeight: 60,
       floatingWidgetWidth: 60,
