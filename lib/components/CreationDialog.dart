@@ -30,6 +30,7 @@ class _CreationDialogState extends State<CreationDialog> {
   void initState() {
     super.initState();
     type = widget.dialogType;
+    selectedCategory = widget.categoryManager.selectedEntry!.name;
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -176,6 +177,7 @@ class _CreationDialogState extends State<CreationDialog> {
           DropdownMenu(
             expandedInsets: const EdgeInsets.all(10),
             enableSearch: true,
+            initialSelection: widget.categoryManager.selectedEntry,
             dropdownMenuEntries: widget.categoryManager.possibleCategories
                 .map((c) => DropdownMenuEntry(value: c, label: c.name))
                 .toList(),

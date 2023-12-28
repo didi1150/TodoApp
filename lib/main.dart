@@ -38,28 +38,27 @@ class TodoApp extends StatefulWidget {
 
 class _TodoAppState extends State<TodoApp> {
   final CategoryManager categoryManager = CategoryManager();
-
+  String searchText = "";
   List<TodoEntry> todoList = [];
 
   late List<TodoEntry> _searchResults = [];
 
-  updateSearchResult(String searchText) {
+  updateSearchResult(String searchText, bool update) {
+    this.searchText = searchText;
     _searchResults.clear();
     if (searchText.isEmpty) {
       for (int i = 0; i < todoList.length; i++) {
         _searchResults.add(todoList[i]);
       }
-      setState(() {});
-      return;
-    }
-    for (int i = 0; i < todoList.length; i++) {
-      TodoEntry todo = todoList[i];
-      if (todo.name.toLowerCase().contains(searchText.toLowerCase())) {
-        _searchResults.add(todo);
+    } else {
+      for (int i = 0; i < todoList.length; i++) {
+        TodoEntry todo = todoList[i];
+        if (todo.name.toLowerCase().contains(searchText.toLowerCase())) {
+          _searchResults.add(todo);
+        }
       }
     }
-
-    setState(() {});
+    if (update) setState(() {});
   }
 
   void _showAction(BuildContext context, int index) {
@@ -163,12 +162,14 @@ class _TodoAppState extends State<TodoApp> {
             }
 
             var currentTodos = [];
-            if (categoryManager.selectedEntry != null)
+            if (categoryManager.selectedEntry != null) {
               currentTodos =
                   todosMap[categoryManager.selectedEntry!.name] ?? [];
+            }
             todoList = [...currentTodos];
             _searchResults = List.from(todoList);
 
+            updateSearchResult(searchText, false);
             return SingleChildScrollView(
                 child: SizedBox(
               height: MediaQuery.of(context).size.height -
@@ -195,7 +196,9 @@ class _TodoAppState extends State<TodoApp> {
                     height: 15,
                   ),
                   TodoEntrySearchBar(
-                    callback: updateSearchResult,
+                    callback: (text) {
+                      updateSearchResult(text, true);
+                    },
                   ),
                   const SizedBox(height: 15),
                   TodoEntrySection(
